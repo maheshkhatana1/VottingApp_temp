@@ -1,73 +1,59 @@
-# ========================
-# OS / Editor
-# ========================
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
-*.swp
-
-# ========================
-# Node.js (Backend + Frontend)
-# ========================
+############################
+# Node / React
+############################
 node_modules/
 npm-debug.log*
-yarn-debug.log*
 yarn-error.log*
-pnpm-lock.yaml
-
-# ========================
-# Build outputs
-# ========================
-frontend/dist/
-backend/dist/
+pnpm-debug.log*
+dist/
 build/
 
-# ========================
+############################
 # Environment variables
-# ========================
+############################
 .env
 .env.*
 !.env.example
 
-# ========================
-# Docker
-# ========================
+############################
+# Logs
+############################
+logs/
 *.log
+
+############################
+# OS / Editor
+############################
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+############################
+# Docker
+############################
+**/.dockerignore
 docker-compose.override.yml
 
-# ========================
+############################
 # Terraform
-# ========================
-terraform/.terraform/
-terraform/**/.terraform/
-terraform/*.tfstate
-terraform/*.tfstate.*
-terraform/crash.log
-terraform/.terraform.lock.hcl
+############################
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+crash.log
+terraform.tfplan
 
-# ========================
+############################
 # Kubernetes
-# ========================
-kubeconfig
+############################
+kubeconfig*
 *.kubeconfig
 
-# ========================
-# AWS / Cloud credentials
-# ========================
-.aws/
-credentials
-config
+############################
+# GitHub Actions
+############################
+.github/workflows/*.log
 
-# ========================
-# Test / Coverage
-# ========================
-coverage/
-.nyc_output/
-
-# ========================
-# Temporary files
-# ========================
-tmp/
-temp/
-*.tmp
+#####
