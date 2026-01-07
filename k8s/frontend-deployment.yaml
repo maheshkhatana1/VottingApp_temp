@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: voting-frontend
+  labels:
+    app: voting-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: voting-frontend
+  template:
+    metadata:
+      labels:
+        app: voting-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: 295655331805.dkr.ecr.ap-south-1.amazonaws.com/voting-frontend:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: API_URL
+              value: "http://voting-backend"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: voting-frontend
+spec:
+  selector:
+    app: voting-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP

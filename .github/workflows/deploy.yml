@@ -1,0 +1,76 @@
+# name: CI-CD Voting App (EKS)
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# env:
+#   AWS_REGION: ap-south-1
+#   ECR_BACKEND_REPO: voting-backend
+#   ECR_FRONTEND_REPO: voting-frontend
+#   CLUSTER_NAME: voting-eks-cluster
+
+# jobs:
+#   deploy:
+#     name: Build, Push & Deploy
+#     runs-on: ubuntu-latest
+
+#     permissions:
+#       id-token: write      # required for OIDC
+#       contents: read
+
+#     steps:
+#       # 1️⃣ Checkout Code
+#       - name: Checkout source code
+#         uses: actions/checkout@v4
+
+#       # 2️⃣ Configure AWS credentials using OIDC (NO access keys)
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           role-to-assume: arn:aws:iam::295655331805:role/github-actions-eks-role
+#           aws-region: ${{ env.AWS_REGION }}
+
+#       # 3️⃣ Login to Amazon ECR
+#       - name: Login to Amazon ECR
+#         run: |
+#           aws ecr get-login-password --region $AWS_REGION \
+#           | docker login --username AWS --password-stdin \
+#             295655331805.dkr.ecr.$AWS_REGION.amazonaws.com
+
+#       # 4️⃣ Build & Push Backend Image
+#       - name: Build & Push Backend Image
+#         run: |
+#           docker build -t $ECR_BACKEND_REPO backend/
+#           docker tag $ECR_BACKEND_REPO:latest \
+#             295655331805.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_BACKEND_REPO:latest
+#           docker push \
+#             295655331805.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_BACKEND_REPO:latest
+
+#       # 5️⃣ Build & Push Frontend Image
+#       - name: Build & Push Frontend Image
+#         run: |
+#           docker build -t $ECR_FRONTEND_REPO frontend/
+#           docker tag $ECR_FRONTEND_REPO:latest \
+#             295655331805.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_FRONTEND_REPO:latest
+#           docker push \
+#             295655331805.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_FRONTEND_REPO:latest
+
+#       # 6️⃣ Update kubeconfig for EKS
+#       - name: Update kubeconfig
+#         run: |
+#           aws eks update-kubeconfig \
+#             --region $AWS_REGION \
+#             --name $CLUSTER_NAME
+
+#       # 7️⃣ Deploy to Kubernetes
+#       - name: Deploy to EKS
+#         run: |
+#           kubectl apply -f k8s/
+
+#       # 8️⃣ Verify rollout
+#       - name: Verify deployment
+#         run: |
+#           kubectl rollout status deployment/voting-backend
+#           kubectl rollout status deployment/voting-frontend
